@@ -1,0 +1,62 @@
+// Add Menu to Google Sheets - It will be called "Workflow Tools"
+
+function onOpen() {
+  SpreadsheetApp.getUi() 
+      .createMenu('Workflow Tools')
+      .addItem('Save to Document','saveDocument')
+      .addToUi();
+}
+
+
+// Save Sheet Contents to Document
+
+function saveDocument() {
+  
+  var contentExport = SpreadsheetApp.getUi();
+  
+  // Set the filename for the document - in this case I'm using the value of Row 1, Column 2
+  var fileName = SpreadsheetApp.getActiveSheet().getRange(1, 2).getValue();
+  var reportHeader = SpreadsheetApp.getActiveSheet().getRange(1, 2).getValue();
+  
+  var mySheet = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // Select Sheet to Turn into Document - Make sure the name below matches your document
+  var dataSheet = mySheet.getSheetByName('Sheet 1'); 
+  var dataRange = dataSheet.getDataRange();
+  var dataValues = dataRange.getValues();
+  
+  // Set Destination Folder ID below 
+  // You can get this ID by creating a new folder and copying the ID generated in the URL
+  
+  var destinationID = 'XXXXXXXXXXXXXXXXXXXXXXXXXXX';  
+  var destinationFolder = DriveApp.getFolderById(destinationID);
+  
+  // Create the Document
+  var newDocument = DocumentApp.create(fileName);
+  var documentID = newDocument.getId();
+  var file = DriveApp.getFileById(documentID);
+  file.moveTo(destinationFolder);
+  
+  var body = newDocument.getBody();
+  
+  // Set first row as heading and update the style
+  
+  body.insertParagraph(0, reportHeader)
+	 .setHeading(DocumentApp.ParagraphHeading.HEADING1);
+  table = body.appendTable(dataValues);
+  
+  // Adjust table width of first column 
+   
+   table.setColumnWidth(0, 90);
+  
+  // Style Headers
+  
+  var tableHeader = table.getRow(0);
+  tableHeader.editAsText().setBold(true).setForegroundColor('#ffffff');
+  var getCells = tableHeader.getNumCells();
+  
+  for(var i = 0; i < getCells; i++)
+  {
+    tableHeader.getCell(i).setBackgroundColor('#BBB9B9');
+  }
+}

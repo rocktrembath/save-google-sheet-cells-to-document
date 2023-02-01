@@ -21,7 +21,7 @@ function saveDocument() {
   var mySheet = SpreadsheetApp.getActiveSpreadsheet();
   
   // Select Sheet to Turn into Document - Make sure the name below matches your document
-  var dataSheet = mySheet.getSheetByName('Sheet 1'); 
+  var dataSheet = mySheet.getSheetByName('Sheet1'); 
   var dataRange = dataSheet.getDataRange();
   var dataValues = dataRange.getValues();
   
